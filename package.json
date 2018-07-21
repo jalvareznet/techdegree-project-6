@@ -1,0 +1,17 @@
+{
+  "name": "techdegree-project-6",
+  "version": "1.0.0",
+  "description": "Scraper for a project in teamtreehouse.",
+  "main": "scraper.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Juan",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
+    "fs": "0.0.1-security",
+    "jsonexport": "^2.2.1",
+    "request": "^2.87.0"
+  }
+}
