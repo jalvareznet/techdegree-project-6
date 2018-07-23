@@ -6,24 +6,26 @@ var today = new Date().toJSON().slice(0, 10);
 var dt = new Date();
 var time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
 var dir = './data';
-let url = ("http://shirts4mike.com/shirts.php");
+let url = ("http://shirts4mikecom/shirts.php");
 let websites = [];
 let url2 = [];
 let data = []
+let http = require('http');
 
-request(url, function(error, response, html) {
-    if (!error && response.statusCode === 200) {
-        let $ = cheerio.load(html);
+request(url, function(error, response, body) {
 
-        for (let i = 0; i < 8; i += 1) {
+    if (!error && response.statusCode == 200) {
+
+        let $ = cheerio.load(body);
+        for (let i = 0; i < $('.products').children().length; i += 1) {
             websites.push($('.products').children().eq(i).html().slice(9, 25))
             url2.push(`http://shirts4mike.com/${websites[i]}`);
         }
 
-        for (let i = 0; i < 8; i += 1) {
-            request(url2[i], function(error, response, html) {
+        for (let i = 0; i < $('.products').children().length; i += 1) {
+            request(url2[i], function(error, response, body) {
                 if (!error && response.statusCode === 200) {
-                    let $ = cheerio.load(html);
+                    let $ = cheerio.load(body);
                     let $title = $('.shirt-details h1').text().slice(3).replace(',', ' -');
                     let $price = $('.shirt-details h1').text().slice(0, 3);
                     let $imgURL = $('.shirt-picture span').html().slice(17, 41);
@@ -35,12 +37,11 @@ request(url, function(error, response, html) {
                         imgURL: $imgURL,
                         URL: $urlComplete,
                         Time: time
-
                     });
 
-                    if (i === 7) {
+                    if (data[7]) {
                         console.log(data);
-                        fs.writeFile(`${today}.json`, JSON.stringify(data), function(err) {
+                        fs.writeFile(`${today}.json`, JSON.stringify(data), function(error) {
                             if (error) {
                                 console.error(`Something happened writing the JSON and CSV files.`);
                             } else {
@@ -60,13 +61,17 @@ request(url, function(error, response, html) {
                             }
                         });
                     };
-                } else {
-                    console.error(`Something happened looking for each (t-shirt) data... and this is the error message: ${error.message}`);
                 }
             });
         }
     } else {
-        console.error(`Problems: this is the error message: ${error.message} and this is the status code 'statusCode:', ${response && response.statusCode}`);
+
+        if (response = "undefined") {
+            console.error('Cannot connect to "http://shirts4mike.com"');
+        }
+        if (error.message = "getaddrinfo") {
+            console.error('Unable to determine the domain name');
+        }
 
     }
 });
