@@ -37,7 +37,7 @@ request(url, function(error, response, body) {
 
                     // pushing the data to a new array.
                     data.push({
-                        Name: $title,
+                        Title: $title,
                         Price: $price,
                         imgURL: $imgURL,
                         URL: $urlComplete,
