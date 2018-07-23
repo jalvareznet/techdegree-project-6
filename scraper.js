@@ -6,11 +6,13 @@ var today = new Date().toJSON().slice(0, 10);
 var dt = new Date();
 var time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
 var dir = './data';
-let url = ("http://shirts4mikecom/shirts.php");
+let url = ("http://shirts4mike.com/shirts.php");
 let websites = [];
 let url2 = [];
 let data = []
 let http = require('http');
+
+//Requesting the urls of the 8 t-shirts
 
 request(url, function(error, response, body) {
 
@@ -22,6 +24,8 @@ request(url, function(error, response, body) {
             url2.push(`http://shirts4mike.com/${websites[i]}`);
         }
 
+        //Requesting the data title, price, imgURL and url.
+
         for (let i = 0; i < $('.products').children().length; i += 1) {
             request(url2[i], function(error, response, body) {
                 if (!error && response.statusCode === 200) {
@@ -31,6 +35,7 @@ request(url, function(error, response, body) {
                     let $imgURL = $('.shirt-picture span').html().slice(17, 41);
                     let $urlComplete = `http://shirt4smike.com/${websites[i]}`;
 
+                    // pushing the data to a new array.
                     data.push({
                         Name: $title,
                         Price: $price,
@@ -38,6 +43,8 @@ request(url, function(error, response, body) {
                         URL: $urlComplete,
                         Time: time
                     });
+
+                    //Selecting the last loop to create de json of the data, later create the CSV from it.
 
                     if (data[7]) {
                         console.log(data);
@@ -48,6 +55,7 @@ request(url, function(error, response, body) {
                                 console.log('Data added to a JSON file');
                                 var reader = fs.createReadStream(`${today}.json`);
 
+                                //create data folder in case it doesn't exists.
                                 if (!fs.existsSync(dir)) {
                                     fs.mkdirSync(dir);
                                     var writer = fs.createWriteStream(`./data/${today}.csv`);
@@ -64,6 +72,8 @@ request(url, function(error, response, body) {
                 }
             });
         }
+
+        //else of errors
     } else {
 
         if (response = "undefined") {
